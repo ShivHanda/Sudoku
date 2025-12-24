@@ -3,6 +3,7 @@ A daily Sudoku generator for Aptitude Development on every individual.
 
 Repo Structure:
 /Sudoku
+
 │
 
 ├── index.html
