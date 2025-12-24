@@ -4,20 +4,16 @@
     --border-thick: 3px solid #343a40;
     --border-thin: 1px solid #dee2e6;
     --text-primary: #212529;
-    --accent-color: #0d6efd; /* Bootstrap Blue */
-    --highlight-cell: #e7f1ff; /* Light Blue */
-    --highlight-same: #cff4fc; /* Cyan-ish for same numbers */
-    --error-color: #f8d7da;   /* Light Red */
+    --accent-color: #0d6efd;
+    --highlight-cell: #e7f1ff;
+    --highlight-same: #cff4fc;
+    --error-color: #f8d7da;
     --error-text: #842029;
-    --fixed-text: #000000;    /* Bold Black for puzzle numbers */
-    --user-text: #0d6efd;     /* Blue for user input */
+    --fixed-text: #000000;
+    --user-text: #0d6efd;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: 'Inter', sans-serif;
@@ -25,22 +21,21 @@ body {
     color: var(--text-primary);
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     height: 100vh;
-    overflow: hidden; /* Fixes the double scrollbar issue */
+    overflow: hidden;
     padding: 20px;
+    transition: background 0.2s linear;
 }
 
 .app-container {
     width: 100%;
     max-width: 900px;
-    max-height: 100vh; 
-    overflow-y: auto; 
+    max-height: 100vh;
+    overflow-y: auto;
     scrollbar-width: none;
 }
-.app-container::-webkit-scrollbar { 
-    display: none; 
-}
+.app-container::-webkit-scrollbar { display: none; }
 
 /* --- Header --- */
 header {
@@ -57,7 +52,7 @@ h1 { font-size: 1.5rem; color: #343a40; }
 .header-controls {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
 .info-bar {
@@ -68,61 +63,45 @@ h1 { font-size: 1.5rem; color: #343a40; }
     color: #495057;
 }
 
-/* --- TOGGLE SWITCH STYLING --- */
-.toggle-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-right: 15px;
-}
-
-.toggle-icon {
-    font-size: 1.2rem;
-}
-
-.theme-switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-}
-
-.theme-switch input {
+/* --- THEME TOGGLE (Florin Pop Style) --- */
+.checkbox {
     opacity: 0;
-    width: 0;
-    height: 0;
+    position: absolute;
 }
 
-.slider {
-    position: absolute;
+.checkbox-label {
+    background-color: #111;
+    width: 50px;
+    height: 26px;
+    border-radius: 50px;
+    position: relative;
+    padding: 5px;
     cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #cbd5e1;
-    transition: .4s;
-    border-radius: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.slider:before {
+.fa-moon { color: #f1c40f; }
+.fa-sun { color: #f39c12; }
+
+.checkbox-label .ball {
+    background-color: #fff;
+    width: 22px;
+    height: 22px;
     position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
+    left: 2px;
+    top: 2px;
     border-radius: 50%;
+    transition: transform 0.2s linear;
 }
 
-input:checked + .slider {
-    background-color: var(--accent-color);
+/* Animate the ball when checked */
+.checkbox:checked + .checkbox-label .ball {
+    transform: translateX(24px);
 }
 
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-/* --- Layout Wrapper --- */
+/* --- Game Layout --- */
 .game-layout {
     display: flex;
     flex-direction: column;
@@ -130,7 +109,6 @@ input:checked + .slider:before {
     gap: 30px;
 }
 
-/* --- Sudoku Grid --- */
 .board-container {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -159,120 +137,66 @@ input:checked + .slider:before {
 .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: var(--border-thick); }
 .cell:nth-child(n+73) { border-bottom: none; }
 
-/* Interaction States */
 .cell.selected { background-color: var(--highlight-cell); }
 .cell.highlighted { background-color: var(--highlight-same); }
 .cell.error { background-color: var(--error-color); color: var(--error-text); }
 .cell.fixed { font-weight: 700; color: var(--fixed-text); }
 .cell.user-input { font-weight: 500; color: var(--user-text); }
 
-/* --- Sidebar & Controls --- */
-.controls-sidebar {
-    width: 100%;
-    max-width: 500px;
-}
-
-.instruction-text {
-    text-align: center;
-    color: #6c757d;
-    margin-bottom: 15px;
-    font-size: 0.95rem;
-}
+/* --- Controls --- */
+.controls-sidebar { width: 100%; max-width: 500px; }
+.instruction-text { text-align: center; color: #6c757d; margin-bottom: 15px; font-size: 0.95rem; }
 
 button {
-    font-family: inherit;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s;
+    font-family: inherit; border: none; cursor: pointer; border-radius: 6px; transition: all 0.2s;
 }
 
 .secondary-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #e9ecef;
-    color: #495057;
-    font-weight: 600;
-    border: 1px solid #ced4da;
+    width: 100%; padding: 12px; background-color: #e9ecef;
+    color: #495057; font-weight: 600; border: 1px solid #ced4da;
 }
 .secondary-btn:hover { background-color: #dee2e6; }
 
-/* --- Numpad --- */
+/* Numpad */
 .numpad {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin-bottom: 20px;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px;
 }
-
 .num-btn {
-    padding: 15px 0;
-    background-color: white;
-    border: 1px solid #dee2e6;
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--accent-color);
+    padding: 15px 0; background-color: white; border: 1px solid #dee2e6;
+    font-size: 1.25rem; font-weight: 600; color: var(--accent-color);
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
-
 .num-btn:active { background-color: var(--highlight-cell); transform: translateY(1px); }
 .action-btn { background-color: #fff0f1; color: #dc3545; border-color: #f5c2c7; }
 
-/* --- Success Overlay --- */
+/* --- Overlay --- */
 .overlay {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 100;
-    backdrop-filter: blur(2px);
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+    align-items: center; z-index: 100; backdrop-filter: blur(2px);
 }
 .hidden { display: none; }
-
 .modal {
-    background: white;
-    padding: 40px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    min-width: 300px;
+    background: white; padding: 40px; border-radius: 12px;
+    text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); min-width: 300px;
 }
 .modal h2 { margin-bottom: 15px; color: var(--accent-color); }
 .modal button {
-    margin-top: 20px;
-    padding: 10px 25px;
-    background-color: var(--accent-color);
-    color: white;
-    font-size: 1rem;
+    margin-top: 20px; padding: 10px 25px; background-color: var(--accent-color);
+    color: white; font-size: 1rem;
 }
 
-/* --- DESKTOP SPECIFIC ADJUSTMENTS --- */
+/* --- Desktop --- */
 @media (min-width: 850px) {
-    .game-layout {
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: center;
-    }
-
-    .controls-sidebar {
-        width: 250px;
-        margin-top: 0;
-    }
-
+    .game-layout { flex-direction: row; align-items: flex-start; justify-content: center; }
+    .controls-sidebar { width: 250px; margin-top: 0; }
     .numpad { display: none; }
-    
-    .instruction-text {
-        text-align: left;
-        margin-top: 20px;
-    }
+    .instruction-text { text-align: left; margin-top: 20px; }
 }
 
-/* --- DARK MODE THEME --- */
+/* --- Dark Mode Colors --- */
 body.dark-mode {
-    --bg-color: #1a202c;
+    --bg-color: #292c35;
     --grid-bg: #2d3748;
     --border-thick: 3px solid #94a3b8;
     --border-thin: 1px solid #4a5568;
@@ -289,18 +213,10 @@ body.dark-mode {
 body.dark-mode .num-btn, 
 body.dark-mode .secondary-btn, 
 body.dark-mode .modal {
-    background-color: #2d3748;
-    color: #f1f5f9;
-    border-color: #4a5568;
+    background-color: #2d3748; color: #f1f5f9; border-color: #4a5568;
 }
-
 body.dark-mode .action-btn {
-    background-color: #742a2a;
-    color: #feb2b2;
-    border-color: #9b2c2c;
+    background-color: #742a2a; color: #feb2b2; border-color: #9b2c2c;
 }
-
-/* Dark Mode Title Color Fix */
-body.dark-mode h1 {
-    color: #f1f5f9;
-}
+body.dark-mode h1 { color: #f1f5f9; }
+body.dark-mode .checkbox-label { background-color: #111; }
