@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Sudoku</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <header>
+            <h1>Daily Sudoku</h1>
+            <div class="info-bar">
+                <div id="date-display" class="info-item">Loading Date...</div>
+                <div id="timer" class="info-item">00:00</div>
+            </div>
+        </header>
+
+        <div class="game-layout">
+            
+            <div id="game-board" class="board-container">
+                </div>
+
+            <aside class="controls-sidebar">
+                
+                <div class="numpad">
+                    <button class="num-btn" data-value="1">1</button>
+                    <button class="num-btn" data-value="2">2</button>
+                    <button class="num-btn" data-value="3">3</button>
+                    <button class="num-btn" data-value="4">4</button>
+                    <button class="num-btn" data-value="5">5</button>
+                    <button class="num-btn" data-value="6">6</button>
+                    <button class="num-btn" data-value="7">7</button>
+                    <button class="num-btn" data-value="8">8</button>
+                    <button class="num-btn" data-value="9">9</button>
+                    <button class="num-btn action-btn" id="clear-btn" title="Clear Cell">⌫</button>
+                </div>
+
+                <div class="extra-actions">
+                    <p class="instruction-text">Select a cell and type a number.</p>
+                    <button id="solve-btn" class="secondary-btn">Show Solution</button>
+                </div>
+
+            </aside>
+        </div>
+
+    </div>
+
+    <div id="win-overlay" class="overlay hidden">
+        <div class="modal">
+            <h2>Puzzle Solved!</h2>
+            <p>Time: <span id="final-time">00:00</span></p>
+            <button id="close-modal-btn">Close</button>
+        </div>
+    </div>
+
+    <script src="sudoku-engine.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
