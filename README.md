@@ -7,7 +7,7 @@ Repo Structure:
 ├── index.html   
 ├── css/   
 │    └── style.css   
-└── js/   
-    ├── app.js   
-    ├── sudoku-logic.js   
+└── js/     
+    ├── app.js      
+    ├── sudoku-logic.js      
     └── constants.js
