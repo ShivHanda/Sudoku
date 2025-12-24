@@ -1,11 +1,11 @@
 // --- Global Variables ---
-let solutionBoard = []; // The answer key
-let puzzleBoard = [];   // The current state
+let solutionBoard = []; 
+let puzzleBoard = [];   
 let timerInterval;
 let secondsElapsed = 0;
-let selectedCell = null; // Stores coordinates {r, c} of currently clicked cell
+let selectedCell = null; 
 let isGameActive = true;
-let hasStarted = false; // NEW: Flag to track if user started playing
+let hasStarted = false; 
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,11 +26,9 @@ function initGame() {
 
     // 3. Render the Board
     renderBoard();
-
-    // NOTE: Removed startTimer() from here.
 }
 
-// --- NEW: Handle First Interaction ---
+// --- Handle First Interaction ---
 function handleGameStart() {
     if (!hasStarted && isGameActive) {
         hasStarted = true;
@@ -41,7 +39,7 @@ function handleGameStart() {
 // --- Rendering ---
 function renderBoard() {
     const boardContainer = document.getElementById('game-board');
-    boardContainer.innerHTML = ''; // Clear previous
+    boardContainer.innerHTML = ''; 
 
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
@@ -75,7 +73,6 @@ function updateBoardView() {
         const c = parseInt(cell.dataset.c);
         const val = puzzleBoard[r][c];
 
-        // Clear previous state classes (except fixed)
         cell.classList.remove('selected', 'highlighted', 'error', 'user-input');
 
         // Visual: Selected Cell
@@ -111,9 +108,7 @@ function updateBoardView() {
 // --- Interaction Logic ---
 function selectCell(r, c) {
     if (!isGameActive) return;
-    
-    handleGameStart(); // Start timer on click
-    
+    handleGameStart(); 
     selectedCell = { r, c };
     updateBoardView();
 }
@@ -124,10 +119,8 @@ function fillNumber(num) {
     const { r, c } = selectedCell;
     const cellDiv = document.querySelector(`.cell[data-r='${r}'][data-c='${c}']`);
 
-    // Cannot overwrite fixed cells
     if (cellDiv.classList.contains('fixed')) return;
 
-    // Update state
     puzzleBoard[r][c] = num;
     updateBoardView();
 }
@@ -153,8 +146,6 @@ function setupEventListeners() {
     // 2. Physical Keyboard (Desktop)
     document.addEventListener('keydown', (e) => {
         if (!isGameActive) return;
-
-        // Start timer if they use arrow keys or type numbers
         if (!hasStarted) handleGameStart();
 
         const key = e.key;
@@ -200,7 +191,7 @@ function moveSelection(key) {
 
 // --- Timer & Utils ---
 function startTimer() {
-    if (timerInterval) return; // Prevent double intervals
+    if (timerInterval) return;
     timerInterval = setInterval(() => {
         secondsElapsed++;
         const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
@@ -243,25 +234,23 @@ function checkWinCondition() {
     }
 }
 
-// --- Theme Toggle Logic ---
-const themeBtn = document.getElementById('theme-toggle');
+// --- Theme Toggle Logic (Switch Version) ---
+const themeToggle = document.getElementById('theme-toggle');
 const body = document.body;
 
-// 1. Check LocalStorage on Load (Yaad rakho user ne kya chuna tha)
+// 1. Check LocalStorage on Load
 if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark-mode');
-    themeBtn.textContent = '☀️'; // Change icon to Sun
+    themeToggle.checked = true; // Switch ko ON kar do
 }
 
-// 2. Button Click Listener
-themeBtn.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    
-    if (body.classList.contains('dark-mode')) {
-        themeBtn.textContent = '☀️';
-        localStorage.setItem('theme', 'dark'); // Save preference
+// 2. Toggle Switch Listener
+themeToggle.addEventListener('change', function() {
+    if (this.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
     } else {
-        themeBtn.textContent = '🌙';
-        localStorage.setItem('theme', 'light'); // Save preference
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
     }
 });
