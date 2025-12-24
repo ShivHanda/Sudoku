@@ -218,3 +218,58 @@ button {
         margin-top: 20px;
     }
 }
+
+/* --- DARK MODE THEME --- */
+body.dark-mode {
+    --bg-color: #1a202c;       /* Dark Slate Background */
+    --grid-bg: #2d3748;        /* Darker Grid */
+    --border-thick: 3px solid #94a3b8; /* Lighter Border for visibility */
+    --border-thin: 1px solid #4a5568;
+    --text-primary: #f1f5f9;   /* White Text */
+    --fixed-text: #e2e8f0;     /* Light Grey for fixed numbers */
+    --accent-color: #63b3ed;   /* Lighter Blue for Dark Mode */
+    --highlight-cell: #2c5282; /* Dark Blue selection */
+    --highlight-same: #2b6cb0; /* Slightly different blue */
+    --error-color: #742a2a;    /* Dark Red background */
+    --error-text: #feb2b2;     /* Light Red text */
+    --user-text: #90cdf4;      /* Light Blue for user input */
+}
+
+/* Dark Mode specific adjustments for buttons */
+body.dark-mode .num-btn, 
+body.dark-mode .secondary-btn, 
+body.dark-mode .modal {
+    background-color: #2d3748;
+    color: #f1f5f9;
+    border-color: #4a5568;
+}
+
+body.dark-mode .action-btn {
+    background-color: #742a2a;
+    color: #feb2b2;
+    border-color: #9b2c2c;
+}
+
+/* Theme Button Styling */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.theme-btn {
+    background: none;
+    border: 1px solid transparent;
+    font-size: 1.2rem;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.theme-btn:hover {
+    transform: scale(1.1);
+    background-color: rgba(0,0,0,0.05);
+}
+body.dark-mode .theme-btn:hover {
+    background-color: rgba(255,255,255,0.1);
+}
