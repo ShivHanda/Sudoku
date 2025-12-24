@@ -6,7 +6,7 @@ Repo Structure:
 │   
 ├── index.html   
 ├── css/   
-│   └── style.css   
+│    └── style.css   
 └── js/   
     ├── app.js   
     ├── sudoku-logic.js   
