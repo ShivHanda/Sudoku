@@ -14,7 +14,15 @@
         <header>
             <h1>Daily Sudoku</h1>
             <div class="header-controls">
-                <button id="theme-toggle" class="theme-btn" title="Toggle Dark Mode">🌙</button>
+                <div class="toggle-wrapper">
+                    <span class="toggle-icon">☀️</span>
+                    <label class="theme-switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="toggle-icon">🌙</span>
+                </div>
+
                 <div class="info-bar">
                     <div id="date-display" class="info-item">Loading Date...</div>
                     <div id="timer" class="info-item">00:00</div>
@@ -59,6 +67,7 @@
             <button id="close-modal-btn">Close</button>
         </div>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="sudoku-engine.js"></script>
     <script src="app.js"></script>
