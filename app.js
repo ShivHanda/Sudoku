@@ -242,3 +242,26 @@ function checkWinCondition() {
         confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 }
+
+// --- Theme Toggle Logic ---
+const themeBtn = document.getElementById('theme-toggle');
+const body = document.body;
+
+// 1. Check LocalStorage on Load (Yaad rakho user ne kya chuna tha)
+if (localStorage.getItem('theme') === 'dark') {
+    body.classList.add('dark-mode');
+    themeBtn.textContent = '☀️'; // Change icon to Sun
+}
+
+// 2. Button Click Listener
+themeBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    
+    if (body.classList.contains('dark-mode')) {
+        themeBtn.textContent = '☀️';
+        localStorage.setItem('theme', 'dark'); // Save preference
+    } else {
+        themeBtn.textContent = '🌙';
+        localStorage.setItem('theme', 'light'); // Save preference
+    }
+});
