@@ -1,64 +1,208 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Sudoku</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+:root {
+    --bg-color: #f8f9fa;
+    --grid-bg: #ffffff;
+    --border-thick: 3px solid #343a40;
+    --border-thin: 1px solid #dee2e6;
+    --text-primary: #212529;
+    --accent-color: #0d6efd; /* Bootstrap Blue */
+    --highlight-cell: #e7f1ff; /* Light Blue */
+    --highlight-same: #cff4fc; /* Cyan-ish for same numbers */
+    --error-color: #f8d7da;   /* Light Red */
+    --error-text: #842029;
+    --fixed-text: #000000;    /* Bold Black for puzzle numbers */
+    --user-text: #0d6efd;     /* Blue for user input */
+}
 
-    <div class="app-container">
-        
-        <header>
-            <h1>Daily Sudoku</h1>
-            <div class="info-bar">
-                <div id="date-display" class="info-item">Loading Date...</div>
-                <div id="timer" class="info-item">00:00</div>
-            </div>
-        </header>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        <div class="game-layout">
-            
-            <div id="game-board" class="board-container">
-                </div>
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
 
-            <aside class="controls-sidebar">
-                
-                <div class="numpad">
-                    <button class="num-btn" data-value="1">1</button>
-                    <button class="num-btn" data-value="2">2</button>
-                    <button class="num-btn" data-value="3">3</button>
-                    <button class="num-btn" data-value="4">4</button>
-                    <button class="num-btn" data-value="5">5</button>
-                    <button class="num-btn" data-value="6">6</button>
-                    <button class="num-btn" data-value="7">7</button>
-                    <button class="num-btn" data-value="8">8</button>
-                    <button class="num-btn" data-value="9">9</button>
-                    <button class="num-btn action-btn" id="clear-btn" title="Clear Cell">⌫</button>
-                </div>
+.app-container {
+    width: 100%;
+    max-width: 900px;
+}
 
-                <div class="extra-actions">
-                    <p class="instruction-text">Select a cell and type a number.</p>
-                    <button id="solve-btn" class="secondary-btn">Show Solution</button>
-                </div>
+/* --- Header --- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
 
-            </aside>
-        </div>
+h1 { font-size: 1.5rem; color: #343a40; }
 
-    </div>
+.info-bar {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+}
 
-    <div id="win-overlay" class="overlay hidden">
-        <div class="modal">
-            <h2>Puzzle Solved!</h2>
-            <p>Time: <span id="final-time">00:00</span></p>
-            <button id="close-modal-btn">Close</button>
-        </div>
-    </div>
+/* --- Layout Wrapper --- */
+.game-layout {
+    display: flex;
+    flex-direction: column; /* Default: Stack vertically (Mobile) */
+    align-items: center;
+    gap: 30px;
+}
 
-    <script src="sudoku-engine.js"></script>
-    <script src="app.js"></script>
+/* --- Sudoku Grid --- */
+.board-container {
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    width: 100%;
+    max-width: 500px; /* Max size for readability */
+    aspect-ratio: 1 / 1;
+    background-color: var(--grid-bg);
+    border: var(--border-thick);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
 
-</body>
-</html>
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(1.2rem, 4vw, 2rem); /* Scales text size */
+    border: var(--border-thin);
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.1s;
+}
+
+/* The Thick 3x3 Grid Borders */
+.cell:nth-child(3n) { border-right: var(--border-thick); }
+.cell:nth-child(9n) { border-right: none; } /* Reset right edge */
+.cell:nth-child(n+19):nth-child(-n+27),
+.cell:nth-child(n+46):nth-child(-n+54) { border-bottom: var(--border-thick); }
+.cell:nth-child(n+73) { border-bottom: none; } /* Reset bottom edge */
+
+/* Interaction States */
+.cell.selected { background-color: var(--highlight-cell); }
+.cell.highlighted { background-color: var(--highlight-same); }
+.cell.error { background-color: var(--error-color); color: var(--error-text); }
+.cell.fixed { font-weight: 700; color: var(--fixed-text); }
+.cell.user-input { font-weight: 500; color: var(--user-text); }
+
+/* --- Sidebar & Controls --- */
+.controls-sidebar {
+    width: 100%;
+    max-width: 500px;
+}
+
+.instruction-text {
+    text-align: center;
+    color: #6c757d;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+}
+
+/* Buttons */
+button {
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.secondary-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #e9ecef;
+    color: #495057;
+    font-weight: 600;
+    border: 1px solid #ced4da;
+}
+.secondary-btn:hover { background-color: #dee2e6; }
+
+/* --- Numpad (Default: Visible) --- */
+.numpad {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.num-btn {
+    padding: 15px 0;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.num-btn:active { background-color: var(--highlight-cell); transform: translateY(1px); }
+.action-btn { background-color: #fff0f1; color: #dc3545; border-color: #f5c2c7; }
+
+/* --- Success Overlay --- */
+.overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(2px);
+}
+.hidden { display: none; }
+
+.modal {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    min-width: 300px;
+}
+.modal h2 { margin-bottom: 15px; color: var(--accent-color); }
+.modal button {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 1rem;
+}
+
+/* --- DESKTOP SPECIFIC ADJUSTMENTS (Screens > 850px) --- */
+@media (min-width: 850px) {
+    .game-layout {
+        flex-direction: row; /* Side-by-side layout */
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    .controls-sidebar {
+        width: 250px; /* Sidebar takes fixed width */
+        margin-top: 0;
+    }
+
+    /* CRITICAL: Hides the numpad on desktop as requested */
+    .numpad {
+        display: none;
+    }
+    
+    .instruction-text {
+        text-align: left;
+        margin-top: 20px;
+    }
+}
