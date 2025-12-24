@@ -14,17 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initGame() {
-    // 1. Get Today's Date String (YYYY-MM-DD)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('date-display').textContent = formatDate(today);
 
-    // 2. Generate Puzzle using the Engine
     const data = SudokuEngine.generateDaily(today);
     solutionBoard = data.solution;
-    // We copy the puzzle to a working board
     puzzleBoard = JSON.parse(JSON.stringify(data.puzzle));
 
-    // 3. Render the Board
     renderBoard();
 }
 
@@ -57,9 +53,7 @@ function renderBoard() {
                 cellDiv.classList.add('empty');
             }
 
-            // Click Event
             cellDiv.addEventListener('click', () => selectCell(r, c));
-            
             boardContainer.appendChild(cellDiv);
         }
     }
@@ -75,12 +69,10 @@ function updateBoardView() {
 
         cell.classList.remove('selected', 'highlighted', 'error', 'user-input');
 
-        // Visual: Selected Cell
         if (selectedCell && selectedCell.r === r && selectedCell.c === c) {
             cell.classList.add('selected');
         }
 
-        // Visual: Highlight same numbers
         if (selectedCell && val !== 0) {
             const selectedVal = puzzleBoard[selectedCell.r][selectedCell.c];
             if (selectedVal === val) {
@@ -88,7 +80,6 @@ function updateBoardView() {
             }
         }
 
-        // Update Text
         if (val !== 0) {
             cell.textContent = val;
             if (!cell.classList.contains('fixed')) {
@@ -132,7 +123,6 @@ function deleteNumber() {
 
 // --- Event Listeners ---
 function setupEventListeners() {
-    // 1. On-screen Numpad (Mobile)
     document.querySelectorAll('.num-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault(); 
@@ -143,7 +133,6 @@ function setupEventListeners() {
 
     document.getElementById('clear-btn').addEventListener('click', deleteNumber);
 
-    // 2. Physical Keyboard (Desktop)
     document.addEventListener('keydown', (e) => {
         if (!isGameActive) return;
         if (!hasStarted) handleGameStart();
@@ -158,7 +147,6 @@ function setupEventListeners() {
         }
     });
 
-    // 3. Solve Button
     document.getElementById('solve-btn').addEventListener('click', () => {
         if(confirm("Give up? This will show the solution and stop the timer.")) {
             puzzleBoard = JSON.parse(JSON.stringify(solutionBoard));
@@ -169,7 +157,6 @@ function setupEventListeners() {
         }
     });
 
-    // 4. Modal Close
     document.getElementById('close-modal-btn').addEventListener('click', () => {
         document.getElementById('win-overlay').classList.add('hidden');
     });
@@ -212,19 +199,16 @@ function formatDate(isoDate) {
 function checkWinCondition() {
     let isFull = true;
     let isCorrect = true;
-
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
             if (puzzleBoard[r][c] === 0) {
-                isFull = false;
-                break;
+                isFull = false; break;
             }
             if (puzzleBoard[r][c] !== solutionBoard[r][c]) {
                 isCorrect = false;
             }
         }
     }
-
     if (isFull && isCorrect && isGameActive) {
         isGameActive = false;
         stopTimer();
@@ -234,18 +218,18 @@ function checkWinCondition() {
     }
 }
 
-// --- Theme Toggle Logic (Switch Version) ---
-const themeToggle = document.getElementById('theme-toggle');
+// --- Theme Toggle Logic (Florin Pop Style) ---
+const checkbox = document.getElementById('checkbox');
 const body = document.body;
 
 // 1. Check LocalStorage on Load
 if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark-mode');
-    themeToggle.checked = true; // Switch ko ON kar do
+    checkbox.checked = true; 
 }
 
-// 2. Toggle Switch Listener
-themeToggle.addEventListener('change', function() {
+// 2. Listener
+checkbox.addEventListener('change', function() {
     if (this.checked) {
         body.classList.add('dark-mode');
         localStorage.setItem('theme', 'dark');
