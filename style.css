@@ -25,27 +25,23 @@ body {
     color: var(--text-primary);
     display: flex;
     justify-content: center;
-    /* align-items: center; add karne se game vertically center ho jayega */
     align-items: center; 
-    height: 100vh; /* min-height ki jagah height */
-    overflow: hidden; /* Scrollbar ko zabardasti hata dega */
-    padding: 0; /* Body padding hata di */
+    height: 100vh;
+    overflow: hidden; /* Fixes the double scrollbar issue */
+    padding: 20px;
 }
 
-/* App container mein padding de denge */
 .app-container {
     width: 100%;
     max-width: 900px;
-    padding: 20px; /* Padding yahan shift kar di */
-    /* Content agar lamba ho toh container ke andar scroll ho, poori body nahi */
     max-height: 100vh; 
     overflow-y: auto; 
-    /* Container ka scrollbar chhupa do */
     scrollbar-width: none;
 }
 .app-container::-webkit-scrollbar { 
     display: none; 
 }
+
 /* --- Header --- */
 header {
     display: flex;
@@ -58,6 +54,12 @@ header {
 
 h1 { font-size: 1.5rem; color: #343a40; }
 
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .info-bar {
     display: flex;
     gap: 20px;
@@ -66,10 +68,64 @@ h1 { font-size: 1.5rem; color: #343a40; }
     color: #495057;
 }
 
+/* --- TOGGLE SWITCH STYLING --- */
+.toggle-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 15px;
+}
+
+.toggle-icon {
+    font-size: 1.2rem;
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #cbd5e1;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
 /* --- Layout Wrapper --- */
 .game-layout {
     display: flex;
-    flex-direction: column; /* Default: Stack vertically (Mobile) */
+    flex-direction: column;
     align-items: center;
     gap: 30px;
 }
@@ -79,7 +135,7 @@ h1 { font-size: 1.5rem; color: #343a40; }
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     width: 100%;
-    max-width: 500px; /* Max size for readability */
+    max-width: 500px;
     aspect-ratio: 1 / 1;
     background-color: var(--grid-bg);
     border: var(--border-thick);
@@ -90,19 +146,18 @@ h1 { font-size: 1.5rem; color: #343a40; }
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(1.2rem, 4vw, 2rem); /* Scales text size */
+    font-size: clamp(1.2rem, 4vw, 2rem);
     border: var(--border-thin);
     cursor: pointer;
     user-select: none;
     transition: background-color 0.1s;
 }
 
-/* The Thick 3x3 Grid Borders */
 .cell:nth-child(3n) { border-right: var(--border-thick); }
-.cell:nth-child(9n) { border-right: none; } /* Reset right edge */
+.cell:nth-child(9n) { border-right: none; }
 .cell:nth-child(n+19):nth-child(-n+27),
 .cell:nth-child(n+46):nth-child(-n+54) { border-bottom: var(--border-thick); }
-.cell:nth-child(n+73) { border-bottom: none; } /* Reset bottom edge */
+.cell:nth-child(n+73) { border-bottom: none; }
 
 /* Interaction States */
 .cell.selected { background-color: var(--highlight-cell); }
@@ -124,7 +179,6 @@ h1 { font-size: 1.5rem; color: #343a40; }
     font-size: 0.95rem;
 }
 
-/* Buttons */
 button {
     font-family: inherit;
     border: none;
@@ -143,7 +197,7 @@ button {
 }
 .secondary-btn:hover { background-color: #dee2e6; }
 
-/* --- Numpad (Default: Visible) --- */
+/* --- Numpad --- */
 .numpad {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -195,23 +249,20 @@ button {
     font-size: 1rem;
 }
 
-/* --- DESKTOP SPECIFIC ADJUSTMENTS (Screens > 850px) --- */
+/* --- DESKTOP SPECIFIC ADJUSTMENTS --- */
 @media (min-width: 850px) {
     .game-layout {
-        flex-direction: row; /* Side-by-side layout */
+        flex-direction: row;
         align-items: flex-start;
         justify-content: center;
     }
 
     .controls-sidebar {
-        width: 250px; /* Sidebar takes fixed width */
+        width: 250px;
         margin-top: 0;
     }
 
-    /* CRITICAL: Hides the numpad on desktop as requested */
-    .numpad {
-        display: none;
-    }
+    .numpad { display: none; }
     
     .instruction-text {
         text-align: left;
@@ -221,21 +272,20 @@ button {
 
 /* --- DARK MODE THEME --- */
 body.dark-mode {
-    --bg-color: #1a202c;       /* Dark Slate Background */
-    --grid-bg: #2d3748;        /* Darker Grid */
-    --border-thick: 3px solid #94a3b8; /* Lighter Border for visibility */
+    --bg-color: #1a202c;
+    --grid-bg: #2d3748;
+    --border-thick: 3px solid #94a3b8;
     --border-thin: 1px solid #4a5568;
-    --text-primary: #f1f5f9;   /* White Text */
-    --fixed-text: #e2e8f0;     /* Light Grey for fixed numbers */
-    --accent-color: #63b3ed;   /* Lighter Blue for Dark Mode */
-    --highlight-cell: #2c5282; /* Dark Blue selection */
-    --highlight-same: #2b6cb0; /* Slightly different blue */
-    --error-color: #742a2a;    /* Dark Red background */
-    --error-text: #feb2b2;     /* Light Red text */
-    --user-text: #90cdf4;      /* Light Blue for user input */
+    --text-primary: #f1f5f9;
+    --fixed-text: #e2e8f0;
+    --accent-color: #63b3ed;
+    --highlight-cell: #2c5282;
+    --highlight-same: #2b6cb0;
+    --error-color: #742a2a;
+    --error-text: #feb2b2;
+    --user-text: #90cdf4;
 }
 
-/* Dark Mode specific adjustments for buttons */
 body.dark-mode .num-btn, 
 body.dark-mode .secondary-btn, 
 body.dark-mode .modal {
@@ -250,26 +300,7 @@ body.dark-mode .action-btn {
     border-color: #9b2c2c;
 }
 
-/* Theme Button Styling */
-.header-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.theme-btn {
-    background: none;
-    border: 1px solid transparent;
-    font-size: 1.2rem;
-    padding: 5px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-.theme-btn:hover {
-    transform: scale(1.1);
-    background-color: rgba(0,0,0,0.05);
-}
-body.dark-mode .theme-btn:hover {
-    background-color: rgba(255,255,255,0.1);
+/* Dark Mode Title Color Fix */
+body.dark-mode h1 {
+    color: #f1f5f9;
 }
