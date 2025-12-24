@@ -239,5 +239,6 @@ function checkWinCondition() {
         stopTimer();
         document.getElementById('final-time').textContent = document.getElementById('timer').textContent;
         document.getElementById('win-overlay').classList.remove('hidden');
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 }
