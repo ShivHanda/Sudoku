@@ -25,15 +25,27 @@ body {
     color: var(--text-primary);
     display: flex;
     justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
+    /* align-items: center; add karne se game vertically center ho jayega */
+    align-items: center; 
+    height: 100vh; /* min-height ki jagah height */
+    overflow: hidden; /* Scrollbar ko zabardasti hata dega */
+    padding: 0; /* Body padding hata di */
 }
 
+/* App container mein padding de denge */
 .app-container {
     width: 100%;
     max-width: 900px;
+    padding: 20px; /* Padding yahan shift kar di */
+    /* Content agar lamba ho toh container ke andar scroll ho, poori body nahi */
+    max-height: 100vh; 
+    overflow-y: auto; 
+    /* Container ka scrollbar chhupa do */
+    scrollbar-width: none;
 }
-
+.app-container::-webkit-scrollbar { 
+    display: none; 
+}
 /* --- Header --- */
 header {
     display: flex;
