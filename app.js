@@ -5,6 +5,7 @@ let timerInterval;
 let secondsElapsed = 0;
 let selectedCell = null; // Stores coordinates {r, c} of currently clicked cell
 let isGameActive = true;
+let hasStarted = false; // NEW: Flag to track if user started playing
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -26,8 +27,15 @@ function initGame() {
     // 3. Render the Board
     renderBoard();
 
-    // 4. Start Timer
-    startTimer();
+    // NOTE: Removed startTimer() from here.
+}
+
+// --- NEW: Handle First Interaction ---
+function handleGameStart() {
+    if (!hasStarted && isGameActive) {
+        hasStarted = true;
+        startTimer();
+    }
 }
 
 // --- Rendering ---
@@ -46,15 +54,6 @@ function renderBoard() {
 
             if (cellValue !== 0) {
                 cellDiv.textContent = cellValue;
-                // If this value matches the initial puzzle logic, it's fixed
-                // (For simplicity, we assume non-zero in initial generation is fixed. 
-                // To track user input vs fixed perfectly, we'd need a separate 'initialBoard' state,
-                // but checking against solution for correctness is enough for now.)
-                
-                // Better approach: Check if it was part of the original generation
-                // We re-generate just to check "isFixed" or we can tag them in the DOM.
-                // For this simple version: We will tag them as 'fixed' purely if they exist on load.
-                // (Note: This render runs once on load for fixed cells, updates later for user input)
                 cellDiv.classList.add('fixed');
             } else {
                 cellDiv.classList.add('empty');
@@ -69,7 +68,6 @@ function renderBoard() {
 }
 
 function updateBoardView() {
-    // Updates only the numbers/classes, doesn't rebuild DOM
     const cells = document.querySelectorAll('.cell');
     
     cells.forEach(cell => {
@@ -96,13 +94,8 @@ function updateBoardView() {
         // Update Text
         if (val !== 0) {
             cell.textContent = val;
-            
-            // Check if it's a user input (not fixed)
-            // We distinguish by checking if the cell DOES NOT have the 'fixed' class
             if (!cell.classList.contains('fixed')) {
                 cell.classList.add('user-input');
-                
-                // Error checking: Is it wrong?
                 if (val !== solutionBoard[r][c]) {
                     cell.classList.add('error');
                 }
@@ -118,6 +111,9 @@ function updateBoardView() {
 // --- Interaction Logic ---
 function selectCell(r, c) {
     if (!isGameActive) return;
+    
+    handleGameStart(); // Start timer on click
+    
     selectedCell = { r, c };
     updateBoardView();
 }
@@ -146,7 +142,6 @@ function setupEventListeners() {
     // 1. On-screen Numpad (Mobile)
     document.querySelectorAll('.num-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Prevent focus loss issues
             e.preventDefault(); 
             const val = parseInt(e.target.dataset.value);
             fillNumber(val);
@@ -158,6 +153,9 @@ function setupEventListeners() {
     // 2. Physical Keyboard (Desktop)
     document.addEventListener('keydown', (e) => {
         if (!isGameActive) return;
+
+        // Start timer if they use arrow keys or type numbers
+        if (!hasStarted) handleGameStart();
 
         const key = e.key;
         if (key >= '1' && key <= '9') {
@@ -202,6 +200,7 @@ function moveSelection(key) {
 
 // --- Timer & Utils ---
 function startTimer() {
+    if (timerInterval) return; // Prevent double intervals
     timerInterval = setInterval(() => {
         secondsElapsed++;
         const mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
@@ -220,8 +219,6 @@ function formatDate(isoDate) {
 }
 
 function checkWinCondition() {
-    // Simple check: Does puzzleBoard match solutionBoard?
-    // (In a real app, we might check validity even if numbers differ, but for this generated logic, unique solution is guaranteed)
     let isFull = true;
     let isCorrect = true;
 
